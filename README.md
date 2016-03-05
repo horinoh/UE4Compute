@@ -1,3 +1,3 @@
-# UE4Compute
+ï»¿# UE4Compute
 
-* ComputeGlobalShader.usf ‚ğ Engine/Shaders/ ˆÈ‰º‚ÖƒRƒs[ (Copy ComputeGlobalShader.usf to Engine/Shaders/)
+* ComputeGlobalShader.usf ã‚’ Engine/Shaders/ ä»¥ä¸‹ã¸ã‚³ãƒ”ãƒ¼ (Copy ComputeGlobalShader.usf to Engine/Shaders/)
