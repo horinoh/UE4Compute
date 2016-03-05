@@ -1,0 +1,40 @@
+//!< !!!! このファイルは Engine\Shaders\ 以下へコピー !!!!
+//!< !!!! Copy this file to Engine\Shaders\ !!!!
+
+//!< これを書かないと ユニフォームバッファ (ここではCSUniform) が参照できない
+#include "Common.usf"
+
+RWTexture2D<float4> OutTexture;
+
+static const uint3 WorkGroupSize = uint3(32, 32, 1);
+
+uint Mandelbrot(const float2 Complex, const uint Iterations)
+{
+	float2 Z = float2(0.0f, 0.0f);
+	uint i = 0;
+	while(i < Iterations && dot(Z, Z) < 4.0f) {
+		Z = float2(Z.x * Z.x - Z.y * Z.y, 2.0f * Z.x * Z.y) + Complex;
+		++i;
+	}
+	return i;
+}
+
+[numthreads(WorkGroupSize.x, WorkGroupSize.y, 1)]
+void Main( uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID, uint  GroupIndex : SV_GroupIndex, uint3 DispatchThreadID : SV_DispatchThreadID )
+{
+#if 0
+	OutTexture[DispatchThreadID.xy] = float4(float2(GroupThreadID.xy) / float2(WorkGroupSize.xy), 0.0f, 1.0f);
+#else
+	static const float4 ComplexSpace = float4(-2.0f, -1.0f, 1.0f, 1.0f);
+	uint Width, Height;
+	OutTexture.GetDimensions(Width, Height);
+	const float2 Dimension = float2(Width, Height);
+	const float2 PixelSize = (ComplexSpace.zw - ComplexSpace.xy) / Dimension;
+	const float2 Complex = PixelSize * DispatchThreadID.xy + ComplexSpace.xy;
+	//!< ユニフォームバッファ (CSUniform) から取得
+	const uint Iterations = CSUniform.Iterations;
+	const uint i = Mandelbrot(Complex, Iterations);
+	const float3 Color = float3(smoothstep(0, 5, i), smoothstep(5, 10, i), smoothstep(10, 15, i)) * max(sign(i - Iterations), 0);
+	OutTexture[DispatchThreadID.xy] = float4(Color, 1.0f);
+#endif
+}
