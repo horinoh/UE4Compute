@@ -14,7 +14,7 @@ IMPLEMENT_UNIFORM_BUFFER_STRUCT(FComputeShaderUniformBuffer, TEXT("CSUniform"))
 FComputeGlobalShader::FComputeGlobalShader(const ShaderMetaType::CompiledShaderInitializerType& Initializer)
 	: FGlobalShader(Initializer)
 {
-	//!< シェーダ内から使用される名前が "CSUniform" になる
+	//!< シェーダ内から使用される名前が "OutTexture" になる
 	ShaderResourceParam.Bind(Initializer.ParameterMap, TEXT("OutTexture"));
 }
 
