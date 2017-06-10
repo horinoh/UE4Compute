@@ -4,7 +4,7 @@ using UnrealBuildTool;
 
 public class UE4Compute : ModuleRules
 {
-	public UE4Compute(TargetInfo Target)
+	public UE4Compute(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore"
                                                           , "RHI", "RenderCore", "ShaderCore" });
