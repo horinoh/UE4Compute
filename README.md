@@ -1,7 +1,5 @@
 ﻿# UE4Compute
 
-* ComputeGlobalShader.usf を Engine/Shaders/ 以下へコピー (Copy ComputeGlobalShader.usf to Engine/Shaders/)
-
 * Config/ConsoleVariables.ini は Engine/Config 以下からコピーした
 ~~~
 r.ShaderDevelopmentMode=1

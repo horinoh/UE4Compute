@@ -5,16 +5,13 @@
 
 #include "ShaderParameterUtils.h"
 
-/**
-@brief ユニフォームバッファ
-@note シェーダ内から使用される名前が "CSUniform" になる
-*/
+//!< In shader use "CSUniform"
 IMPLEMENT_UNIFORM_BUFFER_STRUCT(FComputeShaderUniformBuffer, TEXT("CSUniform"))
 
 FComputeGlobalShader::FComputeGlobalShader(const ShaderMetaType::CompiledShaderInitializerType& Initializer)
 	: FGlobalShader(Initializer)
 {
-	//!< シェーダ内から使用される名前が "OutTexture" になる
+	//!< In shader use "OutTexture"
 	ShaderResourceParam.Bind(Initializer.ParameterMap, TEXT("OutTexture"));
 }
 
@@ -52,8 +49,4 @@ void FComputeGlobalShader::UnsetUAV(FRHICommandList& CommandList)
 	}
 }
 
-/**
-@note シェーダファイル名が "ComputeGlobalShader" (.usfファイル名、ファイルはEngine/Shaders/以下へコピーしておく)
-@note コールされるシェーダ関数名が "Main"
-*/
-IMPLEMENT_SHADER_TYPE(, FComputeGlobalShader, TEXT("ComputeGlobalShader"), TEXT("Main"), SF_Compute);
+IMPLEMENT_SHADER_TYPE(, FComputeGlobalShader, TEXT("/Project/Private/ComputeGlobalShader.usf"), TEXT("Main"), SF_Compute)

@@ -1,8 +1,6 @@
-//!< !!!! このファイルは Engine\Shaders\ 以下へコピー !!!!
-//!< !!!! Copy this file to Engine\Shaders\ !!!!
-
-//!< これを書かないと ユニフォームバッファ (ここではCSUniform) が参照できない
-#include "Common.usf"
+//!< CSUniform に必要
+//!< Need to use CSUniform
+#include "/Engine/Generated/GeneratedUniformBuffers.ush"
 
 RWTexture2D<float4> OutTexture;
 
