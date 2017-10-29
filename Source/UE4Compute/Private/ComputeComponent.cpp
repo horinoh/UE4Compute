@@ -87,11 +87,11 @@ void UComputeComponent::ToTexture2D()
 {
 	/**
 	@note TODO
-	FTexture2DRHIRef -> UTexture2D へ一発で変換できる方法がありそうなもんだが見つけられないので…
+	Cannot find easy way of convert FTexture2DRHIRef to UTexture2D
 	*/
 	if (nullptr != Texture2DRHI && nullptr != Texture2D && nullptr != Texture2D->Resource)
 	{
-		//!< Texture2DRHI の内容を Colors へ書き出す
+		//!< Write content of Texture2DRHI to Colors
 		ENQUEUE_UNIQUE_RENDER_COMMAND_TWOPARAMETER(GetColors,
 			FTexture2DRHIRef, Src, Texture2DRHI,
 			TArray<FVector4>&, Dest, Colors,
@@ -103,7 +103,7 @@ void UComputeComponent::ToTexture2D()
 				RHIUnlockTexture2D(Src, 0, false);
 			}
 		);
-		//!< Colors の内容を Texture2D へ書き出す
+		//!< Write content of Colors to Texture2D
 		ENQUEUE_UNIQUE_RENDER_COMMAND_TWOPARAMETER(UpdateTexture,
 			TArray<FVector4>&, Src, Colors,
 			UTexture2D*, Dest, Texture2D,
