@@ -15,9 +15,19 @@ void UComputeComponent::InitializeComponent()
 
 	FRHIResourceCreateInfo CreateInfo;
 	Texture2DRHI = RHICreateTexture2D(512, 512, PF_A32B32G32R32F, 1, 1, TexCreate_ShaderResource | TexCreate_UAV, CreateInfo);
-	UAV = RHICreateUnorderedAccessView(Texture2DRHI);
+	if (nullptr != Texture2DRHI)
+	{
+		UAV = RHICreateUnorderedAccessView(Texture2DRHI);
 
-	RandomFillTexture2D();
+		Texture2D = UTexture2D::CreateTransient(Texture2DRHI->GetSizeX(), Texture2DRHI->GetSizeY(), Texture2DRHI->GetFormat());
+		if (nullptr != Texture2D)
+		{
+			//RandomFillTexture2D();
+			Texture2D->UpdateResource();
+		}
+
+		Colors.SetNumUninitialized(Texture2DRHI->GetSizeX() * Texture2DRHI->GetSizeY());
+	}
 }
 void UComputeComponent::UninitializeComponent()
 {
@@ -61,26 +71,18 @@ void UComputeComponent::Dispatch()
 
 void UComputeComponent::RandomFillTexture2D()
 {
-	if (nullptr != Texture2DRHI)
+	if (nullptr != Texture2DRHI && nullptr != Texture2D)
 	{
-		Colors.SetNumUninitialized(Texture2DRHI->GetSizeX() * Texture2DRHI->GetSizeY());
-
-		Texture2D = UTexture2D::CreateTransient(Texture2DRHI->GetSizeX(), Texture2DRHI->GetSizeY(), Texture2DRHI->GetFormat());
-		if(nullptr != Texture2D)
+		auto& Mip = Texture2D->PlatformData->Mips[0];
+		TArray<FVector4> DefaultColor;
+		const auto Dim = Texture2D->GetSizeX() * Texture2D->GetSizeY();
+		for (auto i = 0; i < Dim; ++i)
 		{
-			auto& Mip = Texture2D->PlatformData->Mips[0];
-			TArray<FVector4> DefaultColor;
-			const auto Dim = Texture2D->GetSizeX() * Texture2D->GetSizeY();
-			for (auto i = 0; i < Dim; ++i)
-			{
-				DefaultColor.Add(FVector4(FMath::RandRange(0.0f, 1.0f), FMath::RandRange(0.0f, 1.0f), FMath::RandRange(0.0f, 1.0f), 1.0f));
-			}
-			auto* Dest = Mip.BulkData.Lock(LOCK_READ_WRITE);
-			FMemory::Memcpy(Dest, DefaultColor.GetData(), GPixelFormats[Texture2D->GetPixelFormat()].BlockBytes * DefaultColor.Num());
-			Mip.BulkData.Unlock();
-
-			Texture2D->UpdateResource();
+			DefaultColor.Add(FVector4(FMath::RandRange(0.0f, 1.0f), FMath::RandRange(0.0f, 1.0f), FMath::RandRange(0.0f, 1.0f), 1.0f));
 		}
+		auto* Dest = Mip.BulkData.Lock(LOCK_READ_WRITE);
+		FMemory::Memcpy(Dest, DefaultColor.GetData(), GPixelFormats[Texture2D->GetPixelFormat()].BlockBytes * DefaultColor.Num());
+		Mip.BulkData.Unlock();
 	}
 }
 void UComputeComponent::ToTexture2D()
