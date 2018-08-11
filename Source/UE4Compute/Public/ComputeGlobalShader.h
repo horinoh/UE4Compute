@@ -8,7 +8,7 @@
 @brief ユニフォームバッファ
 */
 BEGIN_UNIFORM_BUFFER_STRUCT(FComputeShaderUniformBuffer, )
-DECLARE_UNIFORM_BUFFER_STRUCT_MEMBER(uint32, Iterations)
+UNIFORM_MEMBER(uint32, Iterations)
 END_UNIFORM_BUFFER_STRUCT(FComputeShaderUniformBuffer)
 
 /**
