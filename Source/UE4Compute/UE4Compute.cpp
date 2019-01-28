@@ -2,4 +2,15 @@
 
 #include "UE4Compute.h"
 
-IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, UE4Compute, "UE4Compute" );
+class FComputeGameModuleImpl : public FDefaultGameModuleImpl
+{
+public:
+	virtual void StartupModule() override
+	{
+		FDefaultGameModuleImpl::StartupModule();
+
+		AddShaderSourceDirectoryMapping(TEXT("/Project"), FPaths::Combine(FPaths::ProjectDir(), TEXT("Shaders")));
+	}
+};
+
+IMPLEMENT_PRIMARY_GAME_MODULE(FComputeGameModuleImpl, UE4Compute, "UE4Compute" );
