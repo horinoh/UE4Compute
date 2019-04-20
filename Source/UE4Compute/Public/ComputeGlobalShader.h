@@ -7,9 +7,9 @@
 /**
 @brief ユニフォームバッファ
 */
-BEGIN_UNIFORM_BUFFER_STRUCT(FComputeShaderUniformBuffer, )
-UNIFORM_MEMBER(uint32, Iterations)
-END_UNIFORM_BUFFER_STRUCT(FComputeShaderUniformBuffer)
+BEGIN_GLOBAL_SHADER_PARAMETER_STRUCT(FComputeShaderUniformBuffer, )
+SHADER_PARAMETER(uint32, Iterations)
+END_GLOBAL_SHADER_PARAMETER_STRUCT()
 
 /**
  * 

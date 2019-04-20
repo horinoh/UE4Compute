@@ -6,7 +6,7 @@
 #include "ShaderParameterUtils.h"
 
 //!< In shader use "CSUniform"
-IMPLEMENT_UNIFORM_BUFFER_STRUCT(FComputeShaderUniformBuffer, TEXT("CSUniform"))
+IMPLEMENT_GLOBAL_SHADER_PARAMETER_STRUCT(FComputeShaderUniformBuffer, "CSUniform");
 
 FComputeGlobalShader::FComputeGlobalShader(const ShaderMetaType::CompiledShaderInitializerType& Initializer)
 	: FGlobalShader(Initializer)
