@@ -41,10 +41,11 @@ void UComputeComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	UniformBuffer.Iterations = 100;
-	ENQUEUE_UNIQUE_RENDER_COMMAND_ONEPARAMETER(Dispatch,
-		UComputeComponent*, ComputeComp, this,
+
+	ENQUEUE_RENDER_COMMAND(Dispatch)(
+		[this](FRHICommandList& RHICmdList)
 		{
-			ComputeComp->Dispatch();
+			Dispatch();
 		}
 	);
 
@@ -94,26 +95,25 @@ void UComputeComponent::ToTexture2D()
 	if (nullptr != Texture2DRHI && nullptr != Texture2D && nullptr != Texture2D->Resource)
 	{
 		//!< Write content of Texture2DRHI to Colors
-		ENQUEUE_UNIQUE_RENDER_COMMAND_TWOPARAMETER(GetColors,
-			FTexture2DRHIRef, Src, Texture2DRHI,
-			TArray<FVector4>&, Dest, Colors,
+		ENQUEUE_RENDER_COMMAND(GetColors)(
+			[this](FRHICommandList& RHICmdList)
 			{
 				uint32 Stride = 0;
-				auto* SrcData = RHILockTexture2D(Src, 0, RLM_ReadOnly, Stride, false);
-				const auto BB = GPixelFormats[Src->GetFormat()].BlockBytes;
-				FMemory::Memcpy(Dest.GetData(), SrcData, BB * Src->GetSizeX() * Src->GetSizeY());
-				RHIUnlockTexture2D(Src, 0, false);
+				auto* SrcData = RHILockTexture2D(Texture2DRHI, 0, RLM_ReadOnly, Stride, false);
+				const auto BB = GPixelFormats[Texture2DRHI->GetFormat()].BlockBytes;
+				FMemory::Memcpy(Colors.GetData(), SrcData, BB * Texture2DRHI->GetSizeX() * Texture2DRHI->GetSizeY());
+				RHIUnlockTexture2D(Texture2DRHI, 0, false);
 			}
 		);
+
 		//!< Write content of Colors to Texture2D
-		ENQUEUE_UNIQUE_RENDER_COMMAND_TWOPARAMETER(UpdateTexture,
-			TArray<FVector4>&, Src, Colors,
-			UTexture2D*, Dest, Texture2D,
+		ENQUEUE_RENDER_COMMAND(UpdateTexture)(
+			[this](FRHICommandList& RHICmdList)
 			{
-				const auto W = Dest->Resource->GetSizeX();
-				const auto H = Dest->Resource->GetSizeY();
-				const auto BB = GPixelFormats[Dest->GetPixelFormat()].BlockBytes;
-				RHIUpdateTexture2D(Dest->Resource->TextureRHI->GetTexture2D(), 0, FUpdateTextureRegion2D(0, 0, 0, 0, W, H), BB * W, reinterpret_cast<const uint8 *>(Src.GetData()));
+				const auto W = Texture2D->Resource->GetSizeX();
+				const auto H = Texture2D->Resource->GetSizeY();
+				const auto BB = GPixelFormats[Texture2D->GetPixelFormat()].BlockBytes;
+				RHIUpdateTexture2D(Texture2D->Resource->TextureRHI->GetTexture2D(), 0, FUpdateTextureRegion2D(0, 0, 0, 0, W, H), BB * W, reinterpret_cast<const uint8 *>(Colors.GetData()));
 			}
 		);
 	}
