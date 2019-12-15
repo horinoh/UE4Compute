@@ -18,7 +18,6 @@ public:
 	//!< UActorComponent
 	virtual void InitializeComponent() override;
 	virtual void UninitializeComponent() override;
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 	void Dispatch();
 

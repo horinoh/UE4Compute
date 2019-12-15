@@ -28,6 +28,19 @@ void UComputeComponent::InitializeComponent()
 
 		Colors.SetNumUninitialized(Texture2DRHI->GetSizeX() * Texture2DRHI->GetSizeY());
 	}
+
+	//!< コンピュートのディスパッチと結果をテクスチャへ (Dispatch compute and result to texture)
+	{
+		UniformBuffer.Iterations = 100;
+		ENQUEUE_RENDER_COMMAND(Dispatch)(
+			[this](FRHICommandList& RHICmdList)
+			{
+				Dispatch();
+			}
+		);
+
+		ToTexture2D();
+	}
 }
 void UComputeComponent::UninitializeComponent()
 {
@@ -35,21 +48,6 @@ void UComputeComponent::UninitializeComponent()
 
 	Texture2DRHI.SafeRelease();
 	UAV.SafeRelease();
-}
-void UComputeComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	UniformBuffer.Iterations = 100;
-
-	ENQUEUE_RENDER_COMMAND(Dispatch)(
-		[this](FRHICommandList& RHICmdList)
-		{
-			Dispatch();
-		}
-	);
-
-	ToTexture2D();
 }
 
 void UComputeComponent::Dispatch()
