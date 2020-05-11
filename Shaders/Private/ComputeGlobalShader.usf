@@ -1,3 +1,5 @@
+#include "/Engine/Public/Platform.ush"
+
 //!< CSUniform ‚É•K—v
 //!< Need to use CSUniform
 #include "/Engine/Generated/GeneratedUniformBuffers.ush"

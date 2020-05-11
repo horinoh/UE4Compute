@@ -22,13 +22,9 @@ public:
 public:
 	FComputeGlobalShader() {}
 	explicit FComputeGlobalShader(const ShaderMetaType::CompiledShaderInitializerType& Initializer);
-	virtual ~FComputeGlobalShader() {}
-
-	//!< FShader
-	virtual bool Serialize(FArchive& Ar) override;
 
 	static bool ShouldCache(EShaderPlatform Platform) { return IsFeatureLevelSupported(Platform, ERHIFeatureLevel::SM5); }
-	static bool ShouldCompilePermutation(const FGlobalShaderPermutationParameters& Parameters) { return true; }
+	static bool ShouldCompilePermutation(const FGlobalShaderPermutationParameters& Parameters) { return IsFeatureLevelSupported(Parameters.Platform, ERHIFeatureLevel::SM5); }
 	static void ModifyCompilationEnvironment(const FGlobalShaderPermutationParameters& Parameters, FShaderCompilerEnvironment& OutEnvironment);
 
 	void SetUniformBuffer(FRHICommandList& CommandList, const FComputeShaderUniformBuffer& UniformBuffer);

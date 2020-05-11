@@ -15,13 +15,6 @@ FComputeGlobalShader::FComputeGlobalShader(const ShaderMetaType::CompiledShaderI
 	ShaderResourceParam.Bind(Initializer.ParameterMap, TEXT("OutTexture"));
 }
 
-bool FComputeGlobalShader::Serialize(FArchive& Ar)
-{
-	auto HasOutdated = FGlobalShader::Serialize(Ar);
-	Ar << ShaderResourceParam;
-	return HasOutdated;
-}
-
 void FComputeGlobalShader::ModifyCompilationEnvironment(const FGlobalShaderPermutationParameters& Parameters, FShaderCompilerEnvironment& OutEnvironment)
 {
 	FGlobalShader::ModifyCompilationEnvironment(Parameters, OutEnvironment);
@@ -32,20 +25,20 @@ void FComputeGlobalShader::SetUniformBuffer(FRHICommandList& CommandList, const 
 {
 	TUniformBufferRef<FComputeShaderUniformBuffer> Buffer;
 	Buffer = TUniformBufferRef<FComputeShaderUniformBuffer>::CreateUniformBufferImmediate(UniformBuffer, UniformBuffer_SingleDraw);
-	SetUniformBufferParameter(CommandList, GetComputeShader(), GetUniformBufferParameter<FComputeShaderUniformBuffer>(), Buffer);
+	SetUniformBufferParameter(CommandList, CommandList.GetBoundComputeShader(), GetUniformBufferParameter<FComputeShaderUniformBuffer>(), Buffer);
 }
 void FComputeGlobalShader::SetUAV(FRHICommandList& CommandList, const FUnorderedAccessViewRHIRef UAV)
 {
 	if (ShaderResourceParam.IsBound())
 	{
-		CommandList.SetUAVParameter(GetComputeShader(), ShaderResourceParam.GetBaseIndex(), UAV);
+		CommandList.SetUAVParameter(CommandList.GetBoundComputeShader(), ShaderResourceParam.GetBaseIndex(), UAV);
 	}
 }
 void FComputeGlobalShader::UnsetUAV(FRHICommandList& CommandList)
 {
 	if (ShaderResourceParam.IsBound())
 	{
-		CommandList.SetUAVParameter(GetComputeShader(), ShaderResourceParam.GetBaseIndex(), FUnorderedAccessViewRHIRef());
+		CommandList.SetUAVParameter(CommandList.GetBoundComputeShader(), ShaderResourceParam.GetBaseIndex(), FUnorderedAccessViewRHIRef());
 	}
 }
 

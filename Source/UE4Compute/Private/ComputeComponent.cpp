@@ -57,12 +57,12 @@ void UComputeComponent::Dispatch()
 		auto& CommandList = GRHICommandList.GetImmediateCommandList();
 		TShaderMapRef<FComputeGlobalShader> Shader(GetGlobalShaderMap(ERHIFeatureLevel::Type::SM5));
 
-		CommandList.SetComputeShader(Shader->GetComputeShader());
+		CommandList.SetComputeShader(Shader.GetComputeShader());
 
 		Shader->SetUniformBuffer(CommandList, UniformBuffer);
 		Shader->SetUAV(CommandList, UAV);
 		{
-			DispatchComputeShader(CommandList, *Shader, Texture2DRHI->GetSizeX() / 32, Texture2DRHI->GetSizeY() / 32, 1);
+			DispatchComputeShader(CommandList, /**Shader*/Shader.GetShader(), Texture2DRHI->GetSizeX() / 32, Texture2DRHI->GetSizeY() / 32, 1);
 		}
 		Shader->UnsetUAV(CommandList);
 	}
