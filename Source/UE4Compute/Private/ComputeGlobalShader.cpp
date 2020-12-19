@@ -4,6 +4,7 @@
 #include "ComputeGlobalShader.h"
 
 #include "ShaderParameterUtils.h"
+#include "ShaderCompilerCore.h"
 
 //!< In shader use "CSUniform"
 IMPLEMENT_GLOBAL_SHADER_PARAMETER_STRUCT(FComputeShaderUniformBuffer, "CSUniform");

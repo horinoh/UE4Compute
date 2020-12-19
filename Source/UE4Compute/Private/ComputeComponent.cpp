@@ -62,7 +62,7 @@ void UComputeComponent::Dispatch()
 		Shader->SetUniformBuffer(CommandList, UniformBuffer);
 		Shader->SetUAV(CommandList, UAV);
 		{
-			DispatchComputeShader(CommandList, /**Shader*/Shader.GetShader(), Texture2DRHI->GetSizeX() / 32, Texture2DRHI->GetSizeY() / 32, 1);
+			DispatchComputeShader(CommandList, Shader.GetShader(), Texture2DRHI->GetSizeX() / 32, Texture2DRHI->GetSizeY() / 32, 1);
 		}
 		Shader->UnsetUAV(CommandList);
 	}
